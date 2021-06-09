@@ -1,0 +1,27 @@
+From 758a88863fc135427b14efd3c117e960a47580dd Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 6 Jun 2021 14:28:52 +0300
+Subject: [PATCH 1/2] Set min_pages to 1 when MaxHeapSize is equal to
+ MinHeapSize
+
+https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8208277
+---
+ src/hotspot/share/memory/heap.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/hotspot/share/memory/heap.cpp b/src/hotspot/share/memory/heap.cpp
+index d55bc07e2c0..a8c045706fa 100644
+--- a/src/hotspot/share/memory/heap.cpp
++++ b/src/hotspot/share/memory/heap.cpp
+@@ -208,7 +208,7 @@ bool CodeHeap::reserve(ReservedSpace rs, size_t committed_size, size_t segment_s
+   // Reserve and initialize space for _memory.
+   size_t page_size = os::vm_page_size();
+   if (os::can_execute_large_page_memory()) {
+-    const size_t min_pages = 8;
++    size_t min_pages = MinHeapSize == MaxHeapSize ? 1 : 8;
+     page_size = MIN2(os::page_size_for_region_aligned(committed_size, min_pages),
+                      os::page_size_for_region_aligned(rs.size(), min_pages));
+   }
+-- 
+2.30.0
+
