@@ -1,0 +1,32 @@
+From 71abeee95823245a817318df1d9acec1517b8e7e Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 12 Jun 2021 23:28:51 +0300
+Subject: [PATCH 3/3] Fix hugetlbfs_sanity_check not using MAP_HUGE_SHIFT
+
+---
+ src/hotspot/os/linux/os_linux.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index 592fe891a0c..93b89c11337 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -3542,8 +3542,14 @@ bool os::Linux::transparent_huge_pages_sanity_check(bool warn,
+ 
+ bool os::Linux::hugetlbfs_sanity_check(bool warn, size_t page_size) {
+   bool result = false;
++
++  int flags = MAP_ANONYMOUS|MAP_PRIVATE|MAP_HUGETLB;
++  if (page_size != default_large_page_size()) {
++    flags |= (exact_log2(page_size) << MAP_HUGE_SHIFT);
++  }
++
+   void *p = mmap(NULL, page_size, PROT_READ|PROT_WRITE,
+-                 MAP_ANONYMOUS|MAP_PRIVATE|MAP_HUGETLB,
++                 flags,
+                  -1, 0);
+ 
+   if (p != MAP_FAILED) {
+-- 
+2.31.1
+
