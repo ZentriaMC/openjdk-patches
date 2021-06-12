@@ -1,0 +1,41 @@
+From e1d2dcf510d6bcd45de627b6af85db373c1fc4a1 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Thu, 10 Jun 2021 01:29:56 +0300
+Subject: [PATCH 2/2] Request alternative huge page size explicitly for SHM as
+ well
+
+---
+ src/hotspot/os/linux/os_linux.cpp | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index 155007724d2..592fe891a0c 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -3790,6 +3790,10 @@ void os::large_page_init() {
+   #define SHM_HUGETLB 04000
+ #endif
+ 
++#ifndef SHM_HUGE_SHIFT
++  #define SHM_HUGE_SHIFT MAP_HUGE_SHIFT
++#endif
++
+ #define shm_warning_format(format, ...)              \
+   do {                                               \
+     if (UseLargePages &&                             \
+@@ -3896,7 +3900,11 @@ char* os::Linux::reserve_memory_special_shm(size_t bytes, size_t alignment,
+ 
+   // Create a large shared memory region to attach to based on size.
+   // Currently, size is the total size of the heap.
+-  int shmid = shmget(IPC_PRIVATE, bytes, SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W);
++  int flags = SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W;
++  if (os::large_page_size() != default_large_page_size()) {
++    flags |= (exact_log2(os::large_page_size()) << SHM_HUGE_SHIFT);
++  }
++  int shmid = shmget(IPC_PRIVATE, bytes, flags);
+   if (shmid == -1) {
+     // Possible reasons for shmget failure:
+     // 1. shmmax is too small for Java heap.
+-- 
+2.31.1
+
