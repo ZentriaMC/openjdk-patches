@@ -1,4 +1,4 @@
-{ lib, openjdk17, fetchFromGitHub }:
+{ lib, openjdk17, fetchFromGitHub, headless ? false }:
 
 let
   version = {
@@ -7,7 +7,7 @@ let
     build = "12";
   };
 in
-openjdk17.overrideAttrs (old: {
+(openjdk17.override { inherit headless; }).overrideAttrs (old: {
   version = "${version.feature}${version.interim}+${version.build}";
 
   src = fetchFromGitHub {
