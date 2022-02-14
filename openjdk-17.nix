@@ -3,8 +3,8 @@
 let
   version = {
     feature = "17";
-    interim = ".0.1";
-    build = "12";
+    interim = ".0.3";
+    build = "1";
   };
 in
 (openjdk17.override { inherit headless; }).overrideAttrs (old: {
@@ -14,7 +14,7 @@ in
     owner = "openjdk";
     repo = "jdk${version.feature}u";
     rev = "jdk-${version.feature}${version.interim}+${version.build}";
-    sha256 = "1l1jgbz8q7zq66npfg88r0l5xga427vrz35iys09j44b6qllrldd";
+    sha256 = "sha256-QZW+rKH0YbidpMIKRenYWRglMsPh+53vUS1Qz3HB6Ek=";
   };
 
   patches = old.patches ++ [
