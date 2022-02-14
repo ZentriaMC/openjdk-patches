@@ -2,8 +2,8 @@
 
 let
   version = {
-    feature = "16.0.1";
-    build = "9";
+    feature = "16.0.2";
+    build = "7";
   };
 in
 (openjdk16.override { inherit headless; }).overrideAttrs (old: {
@@ -13,7 +13,7 @@ in
     owner = "openjdk";
     repo = "jdk${lib.versions.major version.feature}u";
     rev = "jdk-${version.feature}+${version.build}";
-    sha256 = "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f";
+    sha256 = "sha256-/8XHNrf9joCCXMCyPncT54JhqlF+KBL7eAf8hUW/BxU=";
   };
 
   patches = old.patches ++ [
