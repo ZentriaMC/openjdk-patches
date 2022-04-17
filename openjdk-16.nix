@@ -16,6 +16,11 @@ in
     sha256 = "sha256-/8XHNrf9joCCXMCyPncT54JhqlF+KBL7eAf8hUW/BxU=";
   };
 
+  configureFlags = old.configureFlags ++ [
+    "--with-version-build=${version.build}"
+    "--with-version-opt=zentria"
+  ];
+
   patches = old.patches ++ [
     ./16/0001-Set-min_pages-to-1-when-MaxHeapSize-is-equal-to-MinH.patch
     ./16/0002-Request-alternative-huge-page-size-explicitly-for-SH.patch

@@ -17,6 +17,11 @@ in
     sha256 = "sha256-QZW+rKH0YbidpMIKRenYWRglMsPh+53vUS1Qz3HB6Ek=";
   };
 
+  configureFlags = old.configureFlags ++ [
+    "--with-version-build=${version.build}"
+    "--with-version-opt=zentria"
+  ];
+
   patches = old.patches ++ [
     ./17/0002-Request-alternative-huge-page-size-explicitly-for-SH.patch
   ];

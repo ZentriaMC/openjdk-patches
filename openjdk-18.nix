@@ -20,6 +20,11 @@ in
     sha256 = "sha256-yGPC8VA983Ml6Fv/oiEgRrcVe4oe+Q4oCHbzOmFbZq8=";
   };
 
+  configureFlags = old.configureFlags ++ [
+    "--with-version-build=${version.build}"
+    "--with-version-opt=zentria"
+  ];
+
   # Cannot use old.patches, as some of them do not apply.
   patches = [
     "${nixpkgs}/pkgs/development/compilers/openjdk/fix-java-home-jdk10.patch"
