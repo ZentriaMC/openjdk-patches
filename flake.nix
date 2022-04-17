@@ -31,5 +31,13 @@
         packages.openjdk-headless-17 = self.packages.${system}.openjdk-17.override {
           headless = true;
         };
+
+        packages.openjdk-18 = pkgs.callPackage ./openjdk-18.nix {
+          inherit (pkgs.javaPackages.compiler) openjdk17;
+          inherit nixpkgs;
+        };
+        packages.openjdk-headless-18 = self.packages.${system}.openjdk-18.override {
+          headless = true;
+        };
       });
 }
